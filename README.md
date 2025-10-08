@@ -7,7 +7,7 @@ We provide the artifacts for the paper in two formats, one as a docker image tha
 To run the docker image please load our image into docker using
 
 ```bash
- docker load -i unsaferustbenchv1.tar
+ docker load -i unsaferustbenchv2.tar
 ```
 
 You can verify the image has been loaded using
@@ -19,7 +19,7 @@ You can verify the image has been loaded using
 Once verified you can run our image using
 
 ```bash
- docker run -it unsaferustbench:v1.0
+ docker run -it unsaferustbench:v2.0
 ```
 
 You should now be successfully inside our container and can first navigate to the `perf` folder
