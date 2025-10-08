@@ -117,3 +117,47 @@ cd ../../benchmarks/arrayvec-0.7.6
 cargo bench
 nano /tmp/unsafe_coverage.stat
 ```
+
+# FAQ + ERROR Handling
+
+### Compiler build failures
+
+If at anypoint the compiler fails in its build process please retry using `./x.py build` or `./x.py build --stage 1` folowed by `./x.py build --stage 2`.
+
+### Cargo failures/ Instruments not showing data
+
+You can also build cargo this way by passing `cargo` as an argument but if you already have a cargo you can add our `perf/env` flags to your `.cargo/config.toml` file as followed
+
+```bash
+[build]
+# Please note the stage 1 compiler also works
+rustc = "/path/to/your/stage2/bin/rustc"
+rustflags = [
+    "--emit=llvm-ir",
+    "-C", "unsafe_include_native_lib=false",
+    "-C", "llvm-args=-enable-instmarker",
+    # "-C", "llvm-args=-enable-heap-tracker",
+    # "-C", "llvm-args=-enable-unsafe-function-tracker",
+    # "-C", "llvm-args=-enable-unsafe-inst-counter",
+    "-C", "llvm-args=-enable-dynamic-line-count",
+    # "-C", "llvm-args=-enable-cpu-cycle-count",
+    "-Z", "unstable-options",
+    "--extern", "force:unsafe_perf=/path/to/your/perf/target/release/libunsafe_perf.rlib",
+    "-L", "/path/to/your/perf/target/release/deps"
+]
+```
+
+Remember to only use one instrumentation at a time
+
+### New crate is not showing instrumentation data
+
+We require certain flags in the `Cargo.toml` of the crate to be active, depending on the benchmark suite these should be added to the `Cargo.toml` of the crate being tested. Our selection already have these set for you.
+
+```bash
+...
+[profile.bench]
+debug = true # Or 2
+
+[profile.release]
+debug = true # Or 2
+```
